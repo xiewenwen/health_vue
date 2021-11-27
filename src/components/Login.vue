@@ -5,17 +5,17 @@
     </div>
     <div class="login_form">
       <el-form ref="form" :model="form" label-width="80px" size="mini">
-        <el-form-item label="用户名">
+        <el-form-item prop="username">
           <el-input v-model="form.username"
             ><i slot="prefix" class="el-input__icon el-icon-search"></i
           ></el-input>
         </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="form.password"></el-input>
+        <el-form-item prop="password">
+          <el-input v-model="form.password" type="password"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">登录</el-button>
-          <el-button>取消</el-button>
+          <el-button @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -28,15 +28,33 @@ export default {
   data() {
     return {
       form: {
-        username: "",
-        password: "",
+        username: "admin",
+        password: "123456"
       },
     };
   },
   methods: {
     onSubmit() {
-      console.log(this.form.password);
+        //验证前端的输入
+        this.$refs.form.validate( async valid=>{
+            console.log(valid)
+            //解析服务端得到的返回数据
+            const {data:res} = await this.$http.post("login",this.form)
+            console.log('收到返回值====='+res)
+            //通过返回值来确定是否
+            if(res.code===200){
+                this.$message.success("success")
+                //控制路由跳转到对应home组件下
+                this.$router.push({path:'/home'})
+            }else{
+                this.$message.error(res.msg);
+            }
+        })
     },
+    reset(){
+        //重置表表单需要在表单item下指定props的名字 
+        this.$refs.form.resetFields();
+    }
   },
 };
 </script>
