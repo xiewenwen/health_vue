@@ -23,8 +23,30 @@ const routes = [
   }
 ]
 
+
+
 const router = new VueRouter({
   routes
+})
+
+// const originalPush = VueRouter.prototype.push
+// VueRouter.prototype.push = function push(location, onResolve, onReject) {undefined
+// if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+// return originalPush.call(this, location).catch(err => err)
+// }
+
+router.beforeEach((to,from,next)=>{
+  console.log('路由守卫开启')
+  console.log(from)
+  if(to.path==='/login') {
+    return next()
+  }
+  const u=localStorage.getItem("user")
+  console.log(u)
+  if(!u){
+    return next("/login")//user为空 返回到login
+  }
+  next()
 })
 
 export default router

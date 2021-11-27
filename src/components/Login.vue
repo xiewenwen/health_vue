@@ -43,9 +43,10 @@ export default {
             console.log('收到返回值====='+res)
             //通过返回值来确定是否
             if(res.code===200){
-                this.$message.success("success")
+              this.$message.success("success")
+               localStorage.setItem("user",res.user)               
                 //控制路由跳转到对应home组件下
-                this.$router.push({path:'/home'})
+                this.$router.push({path:'/home'})               
             }else{
                 this.$message.error(res.msg);
             }
