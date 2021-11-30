@@ -6,7 +6,7 @@
         <!-- <el-row class="tac">
       <el-col :span="12"> -->
         <el-menu
-          default-active="2"
+          :default-active="activePath"
           :router="router"
           class="el-menu-vertical-demo"
           @open="handleOpen"
@@ -16,16 +16,22 @@
           active-text-color="#ffd04b"
         >
           <!-- 主菜单加载 -->
-          <el-submenu v-for="menu in menulist" index="1" :key="menu.id">
+          <!-- 什么鬼？？？index我传递的是数值就给我报错 有点子无语 -->
+          <el-submenu
+            v-for="menu in menulist"
+            :index="menu.id + ''"
+            :key="menu.id"
+          >
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>{{ menu.title }}</span>
             </template>
-            <!-- 子菜单 -->
+            <!-- 二级菜单 -->
             <el-menu-item
-              index="1-4-1"
+              :index="sub.path"
               v-for="sub in menu.subMenuList"
               :key="sub.id"
+              @click="savePath(sub.path)"
               >{{ sub.title }}</el-menu-item
             >
           </el-submenu>
@@ -33,7 +39,7 @@
         <!-- </el-col>
       </el-row> -->
       </el-aside>
-      <el-main>Main</el-main>
+      <el-main><router-view></router-view></el-main>
     </el-container>
   </el-container>
 </template>
@@ -44,11 +50,14 @@ export default {
     return {
       menulist: [],
       router: "router",
+      activePath: "/welcome",
     };
   },
   created() {
     console.log("加载菜单");
     this.getMenuList();
+    //创建组件的时候去获取缓存中保存的路径
+    this.activePath = localStorage.getItem("activePath");
   },
   methods: {
     handleOpen(key, keyPath) {
@@ -61,6 +70,12 @@ export default {
       const { data: res } = await this.$http.get("menus");
       console.log(res);
       if (res.code === 200) this.menulist = res.data;
+    },
+    //当刷新浏览器的时候 保存在对应的菜单路径下 不会丢失
+    savePath(path) {
+      //保存路径到缓存
+      localStorage.setItem("activePath", path);
+      this.activePath = path;
     },
   },
 };
@@ -78,7 +93,7 @@ export default {
 .el-aside {
   background-color: #72976d;
   color: #333;
-  text-align: center;
+  text-align: left;
   line-height: 200px;
 }
 
