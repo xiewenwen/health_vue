@@ -1,10 +1,21 @@
 <template>
   <div class="login_container">
-    <div class="avatat_box">
-      <img src="../assets/logo.png"/>
+      <div style="display: flex; height: 100px;">
+      <transition name="el-zoom-in-center">
+        <div v-show="show2" class="transition-box">never</div>
+      </transition>
+
+      <transition name="el-zoom-in-top">
+        <div v-show="show2" class="transition-box">stop</div>
+      </transition>
+
+      <transition name="el-zoom-in-bottom">
+        <div v-show="show2" class="transition-box">stop</div>
+      </transition>
     </div>
-    <div class="login_form">
-      <el-form ref="form" :model="form" label-width="80px" size="mini">
+      <div class="login_box"></div>
+      <div class="login_form">
+        <el-form class="form_style"  ref="form" :model="form" label-width="60px" size="medium">
         <el-form-item prop="username">
           <el-input v-model="form.username"
             ><i slot="prefix" class="el-input__icon el-icon-search"></i
@@ -18,8 +29,9 @@
           <el-button @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
+      </div>   
     </div>
-  </div>
+
 </template>
 
 <script>
@@ -31,6 +43,7 @@ export default {
         username: "admin",
         password: "123456"
       },
+      show2: false
     };
   },
   methods: {
@@ -57,22 +70,66 @@ export default {
         this.$refs.form.resetFields();
     }
   },
+  mounted(){
+    setInterval(()=>{
+      this.show2=true;
+    },800)
+    
+  }
 };
 </script>
 
 <style lang="less" scoped>
 .login_form {
-  width: 340px;
-  height: 300px;
-  background-color: skyblue;
+  width: 338px;
+  height: 360px;
+  // background-color: skyblue;
   position: absolute;
-  left: 35%;
+  left: 60%;
+  margin-top: 10%;
+  z-index: 999;
+  border-radius:15px;
+  border:2px solid white; 
+  
 }
+
+.form_style{
+  margin-top: 80px;
+  margin-right: 50px;
+  padding: 0;
+}
+
 .login_box {
-  width: 370px;
+  width: 340px;
+  height: 360px;
+  left: 60%;
+  margin-top: 10%;
+  z-index: 1;
+  position: absolute;
+  background-color: #74759b;
+  opacity:0.5;
+  // 毛玻璃控制效果
+  filter: blur(5px);
+  
+ 
 }
 .login_container {
-  background-color: skyblue;
+  margin-top: 0px;
   height: 100%;
+  width: 100%;
+  background-image: linear-gradient(to right,#74759b,#61649f,#ea7293);
+  
 }
+.transition-box {
+    margin-bottom: 0px;
+    width: 200px;
+    height: 100px;
+    border-radius: 4px;
+    background-color: #409EFF;
+    text-align: center;
+    color: #fff;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    margin-right: 20px;
+  }
 </style>
