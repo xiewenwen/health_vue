@@ -17,9 +17,9 @@
           </el-col>
         </el-row>
 
-        <div v-for="o in 2" :key="o" class="text item">
+        <!-- <div v-for="o in 2" :key="o" class="text item">
           {{ "列表内容 " + o }}
-        </div>
+        </div> -->
       </el-card>
     </div>
   </div>
@@ -30,8 +30,34 @@ export default {
   name: "UserList",
   data() {
     return {
+      //查询信息实体
+      queryInfo: {
+        query: "admin",
+        pageNum: 1,
+        pageSize: 10,
+      },
       input: "",
+      userList: [],
+      total: 0, //总数量
     };
+  },
+  created() {
+    this.getUserList();
+  },
+  methods: {
+    //获取的用户
+    async getUserList() {
+      console.log("获取所有的用户列表");
+      const { data: res } = await this.$http.get("/user/all", {
+        params: this.queryInfo,
+      });
+      this.userList = res.data;
+      this.total = res.num;
+      console.log(res);
+    },
+    searchUserList() {
+      console.log("查询用户");
+    },
   },
 };
 </script>
