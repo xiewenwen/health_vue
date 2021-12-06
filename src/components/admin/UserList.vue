@@ -16,10 +16,42 @@
             <el-button type="danger" @click="searchUserList">搜索</el-button>
           </el-col>
         </el-row>
-
-        <!-- <div v-for="o in 2" :key="o" class="text item">
-          {{ "列表内容 " + o }}
-        </div> -->
+        <template>
+          <el-table :data="userList" border stripe>
+            <el-table-column type="index"></el-table-column>
+            <el-table-column prop="username" label="用户名"> </el-table-column>
+            <el-table-column prop="email" label="邮件"> </el-table-column>
+            <el-table-column prop="role" label="角色"> </el-table-column>
+            <el-table-column prop="state" label="状态">
+              <!-- 作用域插槽 控制状态-->
+              <template slot-scope="scope"
+                ><el-switch v-model="scope.row.state"></el-switch
+              ></template>
+            </el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button
+                  @click="handleClick(scope.row)"
+                  type="text"
+                  size="small"
+                  >修改</el-button
+                >
+                <el-button type="text" size="small">删除</el-button>
+                <el-button type="text" size="small">权限</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="queryInfo.pageNum"
+            :page-sizes="[1, 2, 5, 100]"
+            :page-size="queryInfo.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          >
+          </el-pagination>
+        </template>
       </el-card>
     </div>
   </div>
@@ -32,13 +64,14 @@ export default {
     return {
       //查询信息实体
       queryInfo: {
-        query: "admin",
+        query: "",
         pageNum: 1,
         pageSize: 10,
       },
       input: "",
       userList: [],
       total: 0, //总数量
+      // currentPage4: 4,
     };
   },
   created() {
@@ -57,6 +90,19 @@ export default {
     },
     searchUserList() {
       console.log("查询用户");
+    },
+    handleClick(row) {
+      console.log(row);
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.queryInfo.pageSize = val;
+      this.getUserList();
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.queryInfo.pageNum = val;
+      this.getUserList();
     },
   },
 };
