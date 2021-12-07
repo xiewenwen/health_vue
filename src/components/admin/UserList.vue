@@ -9,11 +9,21 @@
       <el-card class="box-card">
         <el-row class="con">
           <el-col :span="6" class="con">
-            <el-input placeholder="请输入内容" v-model="input" clearable>
+            <el-input
+              placeholder="请输入内容"
+              v-model="queryInfo.query"
+              clearable
+              @click="getUserList"
+            >
             </el-input>
           </el-col>
           <el-col :span="2">
-            <el-button type="danger" @click="searchUserList">搜索</el-button>
+            <el-button type="danger" @click="getUserList">搜索</el-button>
+          </el-col>
+          <el-col :span="2">
+            <el-button type="danger" @click="addDialogVisible = true"
+              >新增</el-button
+            >
           </el-col>
         </el-row>
         <template>
@@ -25,7 +35,10 @@
             <el-table-column prop="state" label="状态">
               <!-- 作用域插槽 控制状态-->
               <template slot-scope="scope"
-                ><el-switch v-model="scope.row.state"></el-switch
+                ><el-switch
+                  v-model="scope.row.state"
+                  @change="userStateChange(scope.row)"
+                ></el-switch
               ></template>
             </el-table-column>
             <el-table-column label="操作">
@@ -53,6 +66,33 @@
           </el-pagination>
         </template>
       </el-card>
+      <el-dialog
+        title="添加用户"
+        :visible.sync="addDialogVisible"
+        width="50%"
+        @close="addDialogClosed"
+      >
+        <el-form
+          :model="addForm"
+          :rules="adddFormrules"
+          ref="addFormRef"
+          label-width="70px"
+        >
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="addForm.username"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="addForm.password"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="addForm.email"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="addDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="addUser">确定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -71,7 +111,26 @@ export default {
       input: "",
       userList: [],
       total: 0, //总数量
-      // currentPage4: 4,
+      addDialogVisible: false,
+      addForm: {
+        username: "",
+        passwrd: "",
+        email: "",
+      },
+      adddFormrules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 5, max: 8, message: "长度在 5 到 8个字符", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "请输入passwrd", trigger: "blur" },
+          { min: 5, max: 8, message: "长度在 5 到 8个字符", trigger: "blur" },
+        ],
+        email: [
+          { required: true, email: "email", trigger: "blur" },
+          { min: 5, max: 8, message: "长度在 5 到 8个字符", trigger: "blur" },
+        ],
+      },
     };
   },
   created() {
@@ -94,15 +153,50 @@ export default {
     handleClick(row) {
       console.log(row);
     },
+    //修改每个分页的数量
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.queryInfo.pageSize = val;
       this.getUserList();
     },
+    //翻到第几页
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.queryInfo.pageNum = val;
       this.getUserList();
+    },
+    //修改用户的状态
+    async userStateChange(userInfo) {
+      const allInfo = await this.$http.put(
+        `/user/state?id=${userInfo.id}&state=${userInfo.state}`
+      );
+      console.log(allInfo);
+      if (allInfo.data.code === 200) {
+        this.$message.success(allInfo.data.msg);
+      } else {
+        this.$message.error(allInfo.data.msg);
+      }
+    },
+    //添加用户的功能
+    addUser() {
+      //表单先校验
+      this.$refs.addFormRef.validate(async (valid) => {
+        console.log(valid);
+        const { data: res } = await this.$http.post("user/add", this.addForm);
+        if (res.code === 200) {
+          this.$message.success(res.msg);
+          //添加成功后 关闭对话框
+          this.addDialogVisible = false;
+          //并且刷新当前列表
+          this.getUserList();
+        } else {
+          this.$message.error(res.msg);
+        }
+      });
+    },
+    //监听添加用户的
+    addDialogClosed() {
+      this.$refs.addFormRef.resetFields();
     },
   },
 };
