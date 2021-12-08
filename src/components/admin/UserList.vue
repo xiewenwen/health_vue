@@ -44,12 +44,17 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button
-                  @click="handleClick(scope.row)"
+                  @click="getUserInfo(scope.row.id)"
                   type="text"
                   size="small"
                   >修改</el-button
                 >
-                <el-button type="text" size="small">删除</el-button>
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="delUser(scope.row.id)"
+                  >删除</el-button
+                >
                 <el-button type="text" size="small">权限</el-button>
               </template>
             </el-table-column>
@@ -93,6 +98,27 @@
           <el-button type="primary" @click="addUser">确定</el-button>
         </span>
       </el-dialog>
+
+      <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="50%">
+        <el-form :model="editForm" ref="editFormRef" label-width="70px">
+          <el-form-item v-show="false" label="id" prop="id">
+            <el-input v-model="editForm.id"></el-input>
+          </el-form-item>
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="editForm.username"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="editForm.password"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="editForm.email"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="editDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="updateUser">确定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -106,7 +132,7 @@ export default {
       queryInfo: {
         query: "",
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 2,
       },
       input: "",
       userList: [],
@@ -131,6 +157,23 @@ export default {
           { min: 5, max: 8, message: "长度在 5 到 8个字符", trigger: "blur" },
         ],
       },
+
+      editForm: { id: "", username: "", password: "", email: "" },
+      editDialogVisible: false,
+      // editFormrules: {
+      //   username: [
+      //     { required: true, message: "请输入用户名", trigger: "blur" },
+      //     { min: 5, max: 8, message: "长度在 5 到 8个字符", trigger: "blur" },
+      //   ],
+      //   password: [
+      //     { required: true, message: "请输入passwrd", trigger: "blur" },
+      //     { min: 5, max: 8, message: "长度在 5 到 8个字符", trigger: "blur" },
+      //   ],
+      //   email: [
+      //     { required: true, email: "email", trigger: "blur" },
+      //     { min: 5, max: 8, message: "长度在 5 到 8个字符", trigger: "blur" },
+      //   ],
+      // },
     };
   },
   created() {
@@ -150,8 +193,33 @@ export default {
     searchUserList() {
       console.log("查询用户");
     },
-    handleClick(row) {
-      console.log(row);
+    //按照id获取对应用的的信息 用于编辑页面展示
+    async getUserInfo(id) {
+      console.log(id);
+      this.editDialogVisible = true;
+      const { data: res } = await this.$http.get("/getUser", {
+        params: { id: id },
+      });
+      console.log(res);
+      if (res != null) {
+        this.editForm.id = res.id;
+        this.editForm.username = res.username;
+        this.editForm.password = res.password;
+        this.editForm.email = res.email;
+      }
+    },
+    async updateUser() {
+      console.log("修改用户信息");
+      const { data: res } = await this.$http.post("/updateUser", this.editForm);
+      if (res.code === 200) {
+        this.$message.success(res.msg);
+        //添加成功后 关闭对话框
+        this.editDialogVisible = false;
+        //并且刷新当前列表
+        this.getUserList();
+      } else {
+        this.$message.error(res.msg);
+      }
     },
     //修改每个分页的数量
     handleSizeChange(val) {
@@ -197,6 +265,25 @@ export default {
     //监听添加用户的
     addDialogClosed() {
       this.$refs.addFormRef.resetFields();
+    },
+    //删除用户
+    async delUser(id) {
+      const result = await this.$confirm("是否删除该用户", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).catch((err) => err);
+      if (result != "confirm") {
+        return this.$message.info("已取消删除");
+      }
+      const { data: res } = await this.$http.delete("user/del?id=" + id);
+      if (res.code === 200) {
+        this.$message.success(res.msg);
+        //并且刷新当前列表
+        this.getUserList();
+      } else {
+        this.$message.error(res.msg);
+      }
     },
   },
 };
