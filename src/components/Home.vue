@@ -28,11 +28,11 @@
             </template>
             <!-- 二级菜单 -->
             <el-menu-item
-              :index="sub.path"
+              :index="sub.spath"
               v-for="sub in menu.subMenuList"
               :key="sub.id"
-              @click="savePath(sub.path)"
-              >{{ sub.title }}</el-menu-item
+              @click="savePath(sub.spath)"
+              >{{ sub.stitle }}</el-menu-item
             >
           </el-submenu>
         </el-menu>
