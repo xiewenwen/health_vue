@@ -5,6 +5,37 @@
       <el-aside width="200px">
         <!-- <el-row class="tac">
       <el-col :span="12"> -->
+        <!-- <el-menu
+          :default-active="activePath"
+          :router="router"
+          class="el-menu-vertical-demo"
+          @open="handleOpen"
+          @close="handleClose"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+        > -->
+        <!-- 主菜单加载 -->
+        <!-- 什么鬼？？？index我传递的是数值就给我报错 有点子无语 -->
+        <!-- <el-submenu
+            v-for="menu in menulist"
+            :index="menu.id + ''"
+            :key="menu.id"
+          >
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>{{ menu.title }}</span>
+            </template> -->
+        <!-- 二级菜单 -->
+        <!-- <el-menu-item
+              :index="home / +sub.spath"
+              v-for="sub in menu.subMenuList"
+              :key="sub.id"
+              @click="savePath(sub.spath)"
+              >{{ sub.stitle + sub.spath }}</el-menu-item
+            >
+          </el-submenu>
+        </el-menu> -->
         <el-menu
           :default-active="activePath"
           :router="router"
@@ -15,24 +46,19 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <!-- 主菜单加载 -->
-          <!-- 什么鬼？？？index我传递的是数值就给我报错 有点子无语 -->
-          <el-submenu
-            v-for="menu in menulist"
-            :index="menu.id + ''"
-            :key="menu.id"
-          >
+          <el-submenu index="001">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>{{ menu.title }}</span>
+              <span>001</span>
             </template>
             <!-- 二级菜单 -->
+            <el-menu-item index="/user" @click="savePath('/user')"
+              >用户信息</el-menu-item
+            >
             <el-menu-item
-              :index="sub.spath"
-              v-for="sub in menu.subMenuList"
-              :key="sub.id"
-              @click="savePath(sub.spath)"
-              >{{ sub.stitle }}</el-menu-item
+              index="/building/list"
+              @click="savePath('/building/list')"
+              >住房信息</el-menu-item
             >
           </el-submenu>
         </el-menu>
@@ -71,7 +97,7 @@ export default {
       console.log(res);
       if (res.code === 200) this.menulist = res.data;
     },
-    //当刷新浏览器的时候 保存在对应的菜单路径下 不会丢失
+    // 当刷新浏览器的时候 保存在对应的菜单路径下 不会丢失
     savePath(path) {
       //保存路径到缓存
       localStorage.setItem("activePath", path);

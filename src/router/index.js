@@ -5,6 +5,7 @@ import Login from '../components/Login.vue'
 import Home from '../components/Home'
 import Welcome from '../components/Welcome'
 import UserList from '../components/admin/UserList'
+import BuildingList from '../components/building/BuildingList'
 
 
 Vue.use(VueRouter)
@@ -18,7 +19,9 @@ const routes = [
   {
     path:'/login',
     component:Login
-  },
+  }
+
+,
   //首页路由注册
   {
     path:'/home',
@@ -26,18 +29,22 @@ const routes = [
     //在home组件下重定向到welcome页面
     //welcome组件的路径是home下的二级菜单
     //在home下的mian标签下 使用了路由的占位符 所以定向更新的的是home下的mian内容
-    redirect:"/welcome",
+    redirect:"/user",
     children:[
       {
         path:'/welcome',
         component:Welcome
       },
-    {
-      path:'/user',
-      component:UserList
-    },
+      {
+        path:'/user',
+        component:UserList,
+      },
+      {
+        path:'/building/list',
+        component:BuildingList,}
+      
+    ],
 
-    ]
   },
   
 ]
@@ -45,14 +52,15 @@ const routes = [
 
 
 const router = new VueRouter({
+  mode:'history',
   routes
 })
 
-// const originalPush = VueRouter.prototype.push
-// VueRouter.prototype.push = function push(location, onResolve, onReject) {undefined
-// if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
-// return originalPush.call(this, location).catch(err => err)
-// }
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location, onResolve, onReject) {undefined
+if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+return originalPush.call(this, location).catch(err => err)
+}
 
 router.beforeEach((to,from,next)=>{
   console.log('路由守卫开启')
