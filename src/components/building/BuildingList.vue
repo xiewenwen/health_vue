@@ -44,7 +44,7 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button
-                  @click="getUserInfo(scope.row.id)"
+                  @click="getBuildingInfo(scope.row.id)"
                   type="text"
                   size="small"
                   >修改</el-button
@@ -52,7 +52,7 @@
                 <el-button
                   type="text"
                   size="small"
-                  @click="delUser(scope.row.id)"
+                  @click="delBuilding(scope.row.id)"
                   >删除</el-button
                 >
                 <el-button type="text" size="small">权限</el-button>
@@ -71,6 +71,31 @@
           </el-pagination>
         </template>
       </el-card>
+
+      <el-dialog
+        title="修改居民楼"
+        :visible.sync="editDialogVisible"
+        width="50%"
+      >
+        <el-form :model="editForm" ref="editFormRef" label-width="70px">
+          <el-form-item v-show="false" label="id" prop="id">
+            <el-input v-model="editForm.id"></el-input>
+          </el-form-item>
+          <el-form-item label="幢" prop="zhuang">
+            <el-input v-model="editForm.zhuang"></el-input>
+          </el-form-item>
+          <el-form-item label="单元" prop="danYuan">
+            <el-input v-model="editForm.danYuan"></el-input>
+          </el-form-item>
+          <el-form-item label="门牌号" prop="bianHao">
+            <el-input v-model="editForm.bianHao"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="editDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="updateBuilding">确定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -86,15 +111,15 @@ export default {
         pageSize: 2,
         zhuang: "18幢",
       },
-      //   buildings: {
-      //     zhuang: "18栋",
-      //   },
-      //   input: "",
-      //   pageNum: 1,
-      //   pageSize: 2,
-      //   zhuang: "18幢",
       buildingList: [],
       total: 0, //总数量
+      editDialogVisible: false,
+      editForm: {
+        id: "",
+        zhuang: "",
+        danYuan: "",
+        bianHao: "",
+      },
     };
   },
   created() {
@@ -105,23 +130,70 @@ export default {
     async getBuildingList() {
       console.log("获取所有的用户列表");
       console.log(this.queryInfo.pageSize);
-      const { data: res } = await this.$http.post(
-        "buildind/list",
-        {
-          //   queryInfo: this.queryInfo,
-          //   buildings: this.buildings,
-          pageNum: this.queryInfo.pageNum,
-          pageSize: this.queryInfo.pageSize,
-          zhuang: this.queryInfo.zhuang,
-        }
-        // params: { queryInfo: this.queryInfo, buildings: this.buildings },
-      );
+      const { data: res } = await this.$http.post("buildind/list", {
+        pageNum: this.queryInfo.pageNum,
+        pageSize: this.queryInfo.pageSize,
+        zhuang: this.queryInfo.zhuang,
+      });
       this.buildingList = res.data;
       this.total = res.num;
       console.log(res);
     },
     searchUserList() {
       console.log("查询用户");
+    },
+
+    async getBuildingInfo(id) {
+      console.log(id);
+      this.editDialogVisible = true;
+      const { data: res } = await this.$http.get("building/findById", {
+        params: { id: id },
+      });
+      console.log(res);
+      if (res != null) {
+        this.editForm.id = res.id;
+        this.editForm.zhuang = res.zhuang;
+        this.editForm.danYuan = res.danYuan;
+        this.editForm.bianHao = res.bianHao;
+      }
+    },
+
+    async updateBuilding() {
+      console.log("修改居民楼信息");
+      const { data: res } = await this.$http.post(
+        "buildind/update",
+        this.editForm
+      );
+      if (res.data >= 1) {
+        this.$message.success(res.msg);
+        //添加成功后 关闭对话框
+        this.editDialogVisible = false;
+        //并且刷新当前列表
+        this.getBuildingList();
+      } else {
+        this.$message.error(res.msg);
+      }
+    },
+    //删除用户
+    async delBuilding(id) {
+      const result = await this.$confirm("是否删除", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).catch((err) => err);
+      if (result != "confirm") {
+        return this.$message.info("已取消删除");
+      }
+      const { data: res } = await this.$http.post("buildind/del", {
+        ids: [id],
+      });
+      if (res.data >= 1) {
+        this.$message.success(res.msg);
+        //并且刷新当前列表
+        this.getBuildingList();
+      } else {
+        this.$message.error(res.msg);
+      }
     },
 
     //修改每个分页的数量
