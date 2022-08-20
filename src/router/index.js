@@ -6,6 +6,8 @@ import Home from '../components/Home'
 import Welcome from '../components/Welcome'
 import UserList from '../components/admin/UserList'
 import BuildingList from '../components/building/BuildingList'
+// import { component } from 'vue/types/umd'
+import Static from '../components/Static'
 
 
 Vue.use(VueRouter)
@@ -41,11 +43,16 @@ const routes = [
       },
       {
         path:'/building/list',
-        component:BuildingList,}
+        component:BuildingList,},
+        {
+          path:'/sta',
+          component:Static
+        }
       
     ],
 
   },
+  
   
 ]
 

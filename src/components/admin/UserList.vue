@@ -1,32 +1,39 @@
 <template>
-  <div>
+  <div style="height: 1280px">
     <el-breadcrumb separator="/">
       <!-- <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>权限管理</el-breadcrumb-item> -->
       <el-breadcrumb-item>居民信息列表</el-breadcrumb-item>
     </el-breadcrumb>
-    <div>
-      <el-card class="box-card">
-        <el-row class="con">
-          <el-col :span="6" class="con">
-            <el-input
-              placeholder="请输入内容"
-              v-model="queryInfo.query"
-              clearable
-              @click="getUserList"
-            >
-            </el-input>
-          </el-col>
-          <el-col :span="2">
-            <el-button type="danger" @click="getUserList">搜索</el-button>
-          </el-col>
-          <el-col :span="2">
-            <el-button type="danger" @click="addDialogVisible = true"
-              >新增</el-button
-            >
-          </el-col>
-        </el-row>
-        <template>
+    <el-row style="height: 60px">
+      <el-col :span="6"
+        ><div class="grid-content bg-purple">
+          <el-input
+            placeholder="请输入内容"
+            v-model="queryInfo.query"
+            clearable
+            @click="getUserList"
+          >
+          </el-input></div
+      ></el-col>
+      <el-col :span="6"
+        ><div class="grid-content bg-purple">
+          <el-button type="danger" @click="addDialogVisible = true"
+            >新增</el-button
+          >
+        </div></el-col
+      >
+      <el-col :span="6"
+        ><div class="grid-content bg-purple">
+          <el-button type="danger" @click="getUserList">搜索</el-button>
+        </div></el-col
+      >
+      <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+      <el-col :span="24"></el-col>
+    </el-row>
+    <el-row style="height: 400px">
+      <el-col :span="24" class="con"
+        ><div class="grid-content bg-purple-dark">
           <el-table :data="userList" border stripe>
             <el-table-column type="index"></el-table-column>
             <el-table-column prop="username" label="用户名"> </el-table-column>
@@ -68,9 +75,75 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
           >
+          </el-pagination></div
+      ></el-col>
+    </el-row>
+    <div>
+      <!-- <el-card class="box-card">
+        <el-row class="con">
+          <el-col :span="6" class="con">
+            <el-input
+              placeholder="请输入内容"
+              v-model="queryInfo.query"
+              clearable
+              @click="getUserList"
+            >
+            </el-input>
+          </el-col>
+          <el-col :span="2">
+            <el-button type="danger" @click="getUserList">搜索</el-button>
+          </el-col>
+          <el-col :span="2">
+            <el-button type="danger" @click="addDialogVisible = true"
+              >新增</el-button
+            >
+          </el-col>
+        </el-row>
+        <template>
+          <el-table :data="userList" border stripe>
+            <el-table-column type="index"></el-table-column>
+            <el-table-column prop="username" label="用户名"> </el-table-column>
+            <el-table-column prop="email" label="邮件"> </el-table-column>
+            <el-table-column prop="role" label="角色"> </el-table-column>
+            <el-table-column prop="state" label="状态">
+              
+      <template slot-scope="scope"
+                ><el-switch
+                  v-model="scope.row.state"
+                  @change="userStateChange(scope.row)"
+                ></el-switch
+              ></template>
+            </el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button
+                  @click="getUserInfo(scope.row.id)"
+                  type="text"
+                  size="small"
+                  >修改</el-button
+                >
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="delUser(scope.row.id)"
+                  >删除</el-button
+                >
+                <el-button type="text" size="small">权限</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="queryInfo.pageNum"
+            :page-sizes="[1, 2, 5, 100]"
+            :page-size="queryInfo.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          >
           </el-pagination>
-        </template>
-      </el-card>
+        </template> -->
+      <!-- </el-card>  -->
       <el-dialog
         title="添加用户"
         :visible.sync="addDialogVisible"
@@ -310,8 +383,34 @@ export default {
 }
 
 .box-card {
-  width: 1200px;
+  width: 100%;
   margin-top: 18px;
   margin-left: 0px;
+}
+.el-row {
+  margin-bottom: 2px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+.el-col {
+  border-radius: 4px;
+}
+.bg-purple-dark {
+  background: #99a9bf;
+}
+.bg-purple {
+  background: #d3dce6;
+}
+.bg-purple-light {
+  background: #e5e9f2;
+}
+.grid-content {
+  border-radius: 4px;
+  min-height: 36px;
+}
+.row-bg {
+  padding: 3px 0;
+  background-color: #f9fafc;
 }
 </style>

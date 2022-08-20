@@ -1,8 +1,8 @@
 <template>
   <el-container>
     <el-header>Header</el-header>
-    <el-container>
-      <el-aside width="200px">
+    <el-container style="width: 100%; height: 100%">
+      <el-aside width="230px">
         <!-- <el-row class="tac">
       <el-col :span="12"> -->
         <!-- <el-menu
@@ -46,22 +46,64 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-submenu index="001">
+          <el-menu-item index="/sta">
+            <i class="el-icon-menu"></i>
+            <span slot="title">首页</span>
+          </el-menu-item>
+
+          <el-submenu index="002">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>001</span>
+              <span>社区管理</span>
             </template>
             <!-- 二级菜单 -->
             <el-menu-item index="/user" @click="savePath('/user')"
-              >用户信息</el-menu-item
+              >用户管理</el-menu-item
+            >
+            <el-menu-item index="/user" @click="savePath('/user888')"
+              >健康数据</el-menu-item
             >
             <el-menu-item
               index="/building/list"
               @click="savePath('/building/list')"
-              >住房信息</el-menu-item
+              >住房管理</el-menu-item
+            >
+          </el-submenu>
+          <el-submenu index="003">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>物资管理</span>
+            </template>
+            <!-- 二级菜单 -->
+            <el-menu-item index="/user" @click="savePath('/user')"
+              >物资信息</el-menu-item
+            >
+          </el-submenu>
+          <el-submenu index="004">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>消息公告</span>
+            </template>
+            <!-- 二级菜单 -->
+            <el-menu-item index="/user" @click="savePath('/user')"
+              >公告信息</el-menu-item
+            >
+            <el-menu-item index="/user" @click="savePath('/user')"
+              >申请信息</el-menu-item
+            >
+          </el-submenu>
+          <el-submenu index="005">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>系统设置</span>
+            </template>
+            <!-- 二级菜单 -->
+            <el-menu-item index="/user" @click="savePath('/user')"
+              >核酸过期时间</el-menu-item
             >
           </el-submenu>
         </el-menu>
+        <!-- </el-submenu> -->
         <!-- </el-col>
       </el-row> -->
       </el-aside>
@@ -121,6 +163,7 @@ export default {
   color: #333;
   text-align: left;
   line-height: 200px;
+  height: 100%;
 }
 
 .el-main {
@@ -128,6 +171,7 @@ export default {
   color: #333;
   text-align: center;
   line-height: 160px;
+  width: 100%;
 }
 
 body > .el-container {
