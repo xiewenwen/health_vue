@@ -192,7 +192,7 @@
               label="描述文字"
             ></el-input-number>
           </el-form-item>
-          <el-form-item label="使用者" prop="useManId">
+          <el-form-item :v-show="code === 0" label="使用者" prop="useManId">
             <el-select
               v-model="goodsOutForm.useManId"
               placeholder="请选择用户"
