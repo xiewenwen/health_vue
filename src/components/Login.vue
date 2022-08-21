@@ -83,7 +83,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .login_form {
   width: 338px;
   height: 360px;

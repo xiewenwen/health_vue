@@ -75,7 +75,7 @@
               <span>物资管理</span>
             </template>
             <!-- 二级菜单 -->
-            <el-menu-item index="/user" @click="savePath('/user')"
+            <el-menu-item index="/goods" @click="savePath('/goods')"
               >物资信息</el-menu-item
             >
           </el-submenu>
@@ -150,7 +150,11 @@ export default {
 </script>
 
 <style>
-.el-header,
+.el-header {
+  color: #333;
+  background-color: #333;
+  line-height: 60px;
+}
 .el-footer {
   background-color: #282b28;
   color: #333;
@@ -167,15 +171,17 @@ export default {
 }
 
 .el-main {
-  background-color: #e9eef3;
+  background-color: #f4f8fc;
   color: #333;
-  text-align: center;
-  line-height: 160px;
+  text-align: left;
+  /* line-height: 160px; */
   width: 100%;
+  /* 加入此行解决表头变宽问题 */
+  line-height: 20px !important;
 }
 
 body > .el-container {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 .el-container:nth-child(5) .el-aside,

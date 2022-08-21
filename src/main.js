@@ -5,8 +5,9 @@ import router from './router'
 import './plugins/element.js'
 //添加全局样式
 import './assets/css/global.css'
-
+import ElementUI from 'element-ui';
 import * as echarts from 'echarts'
+import { Table } from 'element-ui';
 
 import axios from 'axios'
 //全局挂在axios
@@ -16,6 +17,9 @@ axios.defaults.baseURL="http://localhost:9000"
 Vue.prototype.$echarts=echarts
 
 Vue.config.productionTip = false
+
+Vue.use(ElementUI);
+Vue.use(Table);
 
 new Vue({
   router,

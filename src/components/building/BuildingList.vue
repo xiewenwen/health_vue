@@ -3,62 +3,55 @@
     <el-breadcrumb separator="/">
       <!-- <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>权限管理</el-breadcrumb-item> -->
-      <el-breadcrumb-item>居民楼列表</el-breadcrumb-item>
+      <el-breadcrumb-item>/居民楼列表</el-breadcrumb-item>
     </el-breadcrumb>
-    <div>
-      <el-card class="box-card">
-        <el-row class="con">
-          <el-col :span="6" class="con">
-            <el-input
-              placeholder="幢"
-              v-model="queryInfo.zhuang"
-              clearable
-              @click="getBuildingList"
-            >
-            </el-input>
-          </el-col>
-          <el-col :span="2">
-            <el-button type="danger" @click="getBuildingList">搜索</el-button>
-          </el-col>
-          <el-col :span="2">
-            <el-button type="danger" @click="addDialogVisible = true"
-              >新增</el-button
-            >
-          </el-col>
-        </el-row>
-        <template>
-          <el-table :data="buildingList" border stripe>
-            <el-table-column type="index"></el-table-column>
-            <el-table-column prop="zhuang" label="幢"> </el-table-column>
-            <el-table-column prop="danYuan" label="单元"> </el-table-column>
-            <el-table-column prop="bianHao" label="门牌号"> </el-table-column>
-            <!-- <el-table-column prop="state" label="状态"> -->
-            <!-- 作用域插槽 控制状态-->
-            <!-- <template slot-scope="scope"
+    <div class="item">
+      <el-input
+        placeholder="幢"
+        v-model="queryInfo.zhuang"
+        clearable
+        style="width: 250px"
+        @click="getBuildingList"
+      >
+      </el-input>
+      <el-button type="primary" @click="addDialogVisible = true"
+        >新增</el-button
+      >
+
+      <template>
+        <el-table :data="buildingList" border stripe class="tableStyle">
+          <el-table-column type="index"></el-table-column>
+          <el-table-column prop="zhuang" label="幢"> </el-table-column>
+          <el-table-column prop="danYuan" label="单元"> </el-table-column>
+          <el-table-column prop="bianHao" label="门牌号"> </el-table-column>
+          <!-- <el-table-column prop="state" label="状态"> -->
+          <!-- 作用域插槽 控制状态-->
+          <!-- <template slot-scope="scope"
                 ><el-switch
                   v-model="scope.row.state"
                   @change="userStateChange(scope.row)"
                 ></el-switch
               ></template> -->
-            <!-- </el-table-column> -->
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button
-                  @click="getBuildingInfo(scope.row.id)"
-                  type="text"
-                  size="small"
-                  >修改</el-button
-                >
-                <el-button
-                  type="text"
-                  size="small"
-                  @click="delBuilding(scope.row.id)"
-                  >删除</el-button
-                >
-                <el-button type="text" size="small">权限</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <!-- </el-table-column> -->
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                @click="getBuildingInfo(scope.row.id)"
+                type="text"
+                size="small"
+                >修改</el-button
+              >
+              <el-button
+                type="text"
+                size="small"
+                @click="delBuilding(scope.row.id)"
+                >删除</el-button
+              >
+              <el-button type="text" size="small">权限</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -69,8 +62,8 @@
             :total="total"
           >
           </el-pagination>
-        </template>
-      </el-card>
+        </div>
+      </template>
       <el-dialog
         title="添加用户"
         :visible.sync="addDialogVisible"
@@ -320,6 +313,7 @@ export default {
   height: 80px;
 }
 .item {
+  margin-top: 8px;
   margin-bottom: 8px;
 }
 
@@ -336,5 +330,12 @@ export default {
   width: 1200px;
   margin-top: 8px;
   margin-left: 0px;
+}
+.tableStyle {
+  height: 500px;
+  width: 100%;
+}
+.block {
+  text-align: right;
 }
 </style>
