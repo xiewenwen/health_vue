@@ -1,153 +1,74 @@
 <template>
-  <div style="height: 1280px">
+  <div>
     <el-breadcrumb separator="/">
       <!-- <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>权限管理</el-breadcrumb-item> -->
-      <el-breadcrumb-item>居民信息列表</el-breadcrumb-item>
+      <el-breadcrumb-item>/居民信息列表</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-row style="height: 60px">
-      <el-col :span="6"
-        ><div class="grid-content bg-purple">
-          <el-input
-            placeholder="请输入内容"
-            v-model="queryInfo.query"
-            clearable
-            @click="getUserList"
-          >
-          </el-input></div
-      ></el-col>
-      <el-col :span="6"
-        ><div class="grid-content bg-purple">
-          <el-button type="danger" @click="addDialogVisible = true"
-            >新增</el-button
-          >
-        </div></el-col
+    <div class="item">
+      <el-input
+        placeholder="请输入内容"
+        v-model="queryInfo.query"
+        @click="getUserList"
+        style="width: 250px"
+        clearable
       >
-      <el-col :span="6"
-        ><div class="grid-content bg-purple">
-          <el-button type="danger" @click="getUserList">搜索</el-button>
-        </div></el-col
+      </el-input>
+      <el-button type="primary" plain icon="el-icon-search" @click="getUserList"
+        >搜索</el-button
       >
-      <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="24"></el-col>
-    </el-row>
-    <el-row style="height: 400px">
-      <el-col :span="24" class="con"
-        ><div class="grid-content bg-purple-dark">
-          <el-table :data="userList" border stripe>
-            <el-table-column type="index"></el-table-column>
-            <el-table-column prop="username" label="用户名"> </el-table-column>
-            <el-table-column prop="email" label="邮件"> </el-table-column>
-            <el-table-column prop="role" label="角色"> </el-table-column>
-            <el-table-column prop="state" label="状态">
-              <!-- 作用域插槽 控制状态-->
-              <template slot-scope="scope"
-                ><el-switch
-                  v-model="scope.row.state"
-                  @change="userStateChange(scope.row)"
-                ></el-switch
-              ></template>
-            </el-table-column>
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button
-                  @click="getUserInfo(scope.row.id)"
-                  type="text"
-                  size="small"
-                  >修改</el-button
-                >
-                <el-button
-                  type="text"
-                  size="small"
-                  @click="delUser(scope.row.id)"
-                  >删除</el-button
-                >
-                <el-button type="text" size="small">权限</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="queryInfo.pageNum"
-            :page-sizes="[1, 2, 5, 100]"
-            :page-size="queryInfo.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
-          >
-          </el-pagination></div
-      ></el-col>
-    </el-row>
+      <el-button type="primary" @click="addDialogVisible = true"
+        >新增</el-button
+      >
+    </div>
     <div>
-      <!-- <el-card class="box-card">
-        <el-row class="con">
-          <el-col :span="6" class="con">
-            <el-input
-              placeholder="请输入内容"
-              v-model="queryInfo.query"
-              clearable
-              @click="getUserList"
+      <el-table :data="userList" class="tableStyle" border stripe>
+        <el-table-column type="index"></el-table-column>
+        <el-table-column prop="username" label="用户名"> </el-table-column>
+        <el-table-column prop="email" label="邮件"> </el-table-column>
+        <el-table-column prop="role" label="角色"> </el-table-column>
+        <el-table-column prop="state" label="状态">
+          <!-- 作用域插槽 控制状态-->
+          <template slot-scope="scope"
+            ><el-switch
+              v-model="scope.row.state"
+              @change="userStateChange(scope.row)"
+            ></el-switch
+          ></template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              @click="getUserInfo(scope.row.id)"
+              type="text"
+              size="small"
+              >修改</el-button
             >
-            </el-input>
-          </el-col>
-          <el-col :span="2">
-            <el-button type="danger" @click="getUserList">搜索</el-button>
-          </el-col>
-          <el-col :span="2">
-            <el-button type="danger" @click="addDialogVisible = true"
-              >新增</el-button
+            <el-button type="text" size="small" @click="delUser(scope.row.id)"
+              >删除</el-button
             >
-          </el-col>
-        </el-row>
-        <template>
-          <el-table :data="userList" border stripe>
-            <el-table-column type="index"></el-table-column>
-            <el-table-column prop="username" label="用户名"> </el-table-column>
-            <el-table-column prop="email" label="邮件"> </el-table-column>
-            <el-table-column prop="role" label="角色"> </el-table-column>
-            <el-table-column prop="state" label="状态">
-              
-      <template slot-scope="scope"
-                ><el-switch
-                  v-model="scope.row.state"
-                  @change="userStateChange(scope.row)"
-                ></el-switch
-              ></template>
-            </el-table-column>
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button
-                  @click="getUserInfo(scope.row.id)"
-                  type="text"
-                  size="small"
-                  >修改</el-button
-                >
-                <el-button
-                  type="text"
-                  size="small"
-                  @click="delUser(scope.row.id)"
-                  >删除</el-button
-                >
-                <el-button type="text" size="small">权限</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="queryInfo.pageNum"
-            :page-sizes="[1, 2, 5, 100]"
-            :page-size="queryInfo.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
-          >
-          </el-pagination>
-        </template> -->
-      <!-- </el-card>  -->
+            <el-button type="text" size="small">权限</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="block">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryInfo.pageNum"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="queryInfo.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        >
+        </el-pagination>
+      </div>
+    </div>
+    <div>
       <el-dialog
         title="添加用户"
         :visible.sync="addDialogVisible"
-        width="50%"
+        width="40%"
         @close="addDialogClosed"
       >
         <el-form
@@ -157,13 +78,19 @@
           label-width="70px"
         >
           <el-form-item label="用户名" prop="username">
-            <el-input v-model="addForm.username"></el-input>
+            <el-input
+              v-model="addForm.username"
+              style="width: 240px"
+            ></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="addForm.password"></el-input>
+            <el-input
+              v-model="addForm.password"
+              style="width: 240px"
+            ></el-input>
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
-            <el-input v-model="addForm.email"></el-input>
+            <el-input v-model="addForm.email" style="width: 240px"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -205,7 +132,7 @@ export default {
       queryInfo: {
         query: "",
         pageNum: 1,
-        pageSize: 2,
+        pageSize: 10,
       },
       input: "",
       userList: [],
@@ -233,20 +160,6 @@ export default {
 
       editForm: { id: "", username: "", password: "", email: "" },
       editDialogVisible: false,
-      // editFormrules: {
-      //   username: [
-      //     { required: true, message: "请输入用户名", trigger: "blur" },
-      //     { min: 5, max: 8, message: "长度在 5 到 8个字符", trigger: "blur" },
-      //   ],
-      //   password: [
-      //     { required: true, message: "请输入passwrd", trigger: "blur" },
-      //     { min: 5, max: 8, message: "长度在 5 到 8个字符", trigger: "blur" },
-      //   ],
-      //   email: [
-      //     { required: true, email: "email", trigger: "blur" },
-      //     { min: 5, max: 8, message: "长度在 5 到 8个字符", trigger: "blur" },
-      //   ],
-      // },
     };
   },
   created() {
@@ -370,6 +283,7 @@ export default {
   height: 80px;
 }
 .item {
+  margin-top: 8px;
   margin-bottom: 8px;
 }
 
@@ -387,30 +301,12 @@ export default {
   margin-top: 18px;
   margin-left: 0px;
 }
-.el-row {
-  margin-bottom: 2px;
-  &:last-child {
-    margin-bottom: 0;
-  }
+
+.tableStyle {
+  height: 500px;
+  width: 100%;
 }
-.el-col {
-  border-radius: 4px;
-}
-.bg-purple-dark {
-  background: #99a9bf;
-}
-.bg-purple {
-  background: #d3dce6;
-}
-.bg-purple-light {
-  background: #e5e9f2;
-}
-.grid-content {
-  border-radius: 4px;
-  min-height: 36px;
-}
-.row-bg {
-  padding: 3px 0;
-  background-color: #f9fafc;
+.block {
+  text-align: right;
 }
 </style>
