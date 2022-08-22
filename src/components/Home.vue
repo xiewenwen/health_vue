@@ -85,7 +85,7 @@
               <span>消息公告</span>
             </template>
             <!-- 二级菜单 -->
-            <el-menu-item index="/user" @click="savePath('/user')"
+            <el-menu-item index="/notice" @click="savePath('/notice')"
               >公告信息</el-menu-item
             >
             <el-menu-item index="/user" @click="savePath('/user')"
