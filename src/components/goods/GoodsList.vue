@@ -53,9 +53,9 @@
         <el-table-column prop="goodName" label="名称"> </el-table-column>
         <el-table-column prop="goodsBeginNum" label="入库数"> </el-table-column>
         <el-table-column prop="goodsNowNum" label="库存"> </el-table-column>
-        <el-table-column prop="goodsFrom" label="物资来源"></el-table-column>
+        <el-table-column prop="goodsFrom" label="物资来源" :formatter="fromFormatter"></el-table-column>
         <el-table-column prop="singlePrice" label="单价"> </el-table-column>
-        <el-table-column prop="goodsType" label="类型"> </el-table-column>
+        <el-table-column prop="goodsType" label="类型" :formatter="typeFormatter"> </el-table-column>
         <el-table-column prop="createTime" label="入库日期"></el-table-column>
 
         <!-- 作用域插槽 控制状态-->
@@ -192,7 +192,7 @@
               label="描述文字"
             ></el-input-number>
           </el-form-item>
-          <el-form-item :v-show="code === 0" label="使用者" prop="useManId">
+          <el-form-item v-show="code === 0" label="使用者" prop="useManId">
             <el-select
               v-model="goodsOutForm.useManId"
               placeholder="请选择用户"
@@ -370,13 +370,34 @@ export default {
         this.goodsOutDialogVisible = false;
         this.getGoodsList();
       } else {
-        this.$message.error(res.msg);
+        this.$message.error("操作失败，请检查库存信息");
       }
     },
 
     handleChange(value) {
       console.log(value);
     },
+
+        //修改每个分页的数量
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.queryInfo.pageSize = val;
+      this.getGoodsList();
+    },
+    //翻到第几页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.queryInfo.pageNum = val;
+      this.getGoodsList();
+    },
+    typeFormatter(row, column, cellValue){
+      return this.types.find(element => element.value===cellValue).label;
+    },
+    fromFormatter(row, column, cellValue){
+      console.log(cellValue);
+      return this.options.find(element => element.value===cellValue).label;
+    }
+
   },
 };
 </script>

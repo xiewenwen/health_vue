@@ -11,6 +11,7 @@ import Static from '../components/Static'
 // import { component } from 'vue/types/umd'
 import NewView from '../components/NewView'
 import GoodsList from '../components/goods/GoodsList'
+import NoticeList from '../components/notice/NoticeList'
 
 
 Vue.use(VueRouter)
@@ -54,7 +55,17 @@ const routes = [
         {
           path:'/goods',
           component:GoodsList
-        }
+        },
+        {
+          path:'/notice',
+          component:NoticeList,
+          children:[
+            {
+              path:'/newview',
+              component:NewView
+            }
+          ]
+        },
       
     ],
 
