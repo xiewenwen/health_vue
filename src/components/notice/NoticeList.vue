@@ -1,5 +1,5 @@
 <template>
-<div>
+  <div>
     <el-breadcrumb separator="/">
       <el-breadcrumb-item>/消息公告</el-breadcrumb-item>
     </el-breadcrumb>
@@ -33,7 +33,7 @@
         >新增</el-button
       >
     </div>
-       <div>
+    <div>
       <el-table :data="noticeList" class="tableStyle" border stripe>
         <!-- <el-table-column type="index"></el-table-column> -->
         <el-table-column prop="id" label="编号"> </el-table-column>
@@ -43,17 +43,25 @@
 
         </el-table-column> -->
         <el-table-column prop="noticeLevel" label="通知等级">
-            <template slot-scope="scope">
-            <el-tag v-show="scope.row.noticeLevel===1" type="danger">{{fromFormatter(scope.row,noticeLevel,scope.row.noticeLevel)}}</el-tag>
-            <el-tag v-show="scope.row.noticeLevel===2" type="warning">{{fromFormatter(scope.row,noticeLevel,scope.row.noticeLevel)}}</el-tag>
-            <el-tag v-show="scope.row.noticeLevel===3" type="info">{{fromFormatter(scope.row,noticeLevel,scope.row.noticeLevel)}}</el-tag>
-            </template>
+          <template slot-scope="scope">
+            <el-tag v-show="scope.row.noticeLevel === 1" type="danger">{{
+              fromFormatter(scope.row, noticeLevel, scope.row.noticeLevel)
+            }}</el-tag>
+            <el-tag v-show="scope.row.noticeLevel === 2" type="warning">{{
+              fromFormatter(scope.row, noticeLevel, scope.row.noticeLevel)
+            }}</el-tag>
+            <el-tag v-show="scope.row.noticeLevel === 3" type="info">{{
+              fromFormatter(scope.row, noticeLevel, scope.row.noticeLevel)
+            }}</el-tag>
+          </template>
         </el-table-column>
         <el-table-column prop="status" label="发布状态">
-            <template slot-scope="scope">
-                <el-tag :type="scope.row.status===1?'success':''">{{typeFormatter(scope.row,status,scope.row.status)}}</el-tag>
-            </template>
-             </el-table-column>
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.status === 1 ? 'success' : ''">{{
+              typeFormatter(scope.row, status, scope.row.status)
+            }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="noticeDate" label="发布日期"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -62,13 +70,10 @@
               @click="updateStatus(scope.row.id)"
               type="text"
               size="small"
-              v-show="scope.row.status===0"
+              v-show="scope.row.status === 0"
               >发布</el-button
             >
-            <el-button
-              type="text"
-              size="small"
-              @click="del(scope.row.id)"
+            <el-button type="text" size="small" @click="del(scope.row.id)"
               >删除</el-button
             >
           </template>
@@ -88,37 +93,25 @@
       </div>
     </div>
     <div>
-        <el-dialog
-        :title="code === 0 ? '物资出库' : '物资入库'"
-        :visible.sync="addDialogVisible"
-        width="40%"
-    
-      >
-         <AddNotice :msg="addDialogVisible" />
-        <!-- <span slot="footer" class="dialog-footer">
-          <el-button @click="goodsOutDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="goodsUseAdd">确定</el-button>
-        </span> -->
+      <el-dialog title="发布消息" :visible.sync="addDialogVisible" width="40%">
+        <AddNotice :msg="addDialogVisible" />
       </el-dialog>
-       
     </div>
-</div>
-  
+  </div>
 </template>
 
 <script>
-import AddNotice from '../notice/AddNotice.vue'
+import AddNotice from "../notice/AddNotice.vue";
 
 export default {
-    name:'NoticeList',
-    components: {
+  name: "NoticeList",
+  components: {
     AddNotice,
-   },
-    data(){
-        return{
-        
-            addDialogVisible: false,
-            levels: [
+  },
+  data() {
+    return {
+      addDialogVisible: false,
+      levels: [
         {
           value: null,
           label: "全部",
@@ -159,27 +152,27 @@ export default {
       },
       noticeList: [],
       total: 0,
-    //   addDialogVisible: false,
-      noticeStatus:null,
-        }
-    },
-    created(){
-        this.getNoticeList();
-    },
-    methods:{
-      async  getNoticeList(){
-          const { data: res } = await this.$http.post("/notice/list", {
+      //   addDialogVisible: false,
+      noticeStatus: null,
+    };
+  },
+  created() {
+    this.getNoticeList();
+  },
+  methods: {
+    async getNoticeList() {
+      const { data: res } = await this.$http.post("/notice/list", {
         pageNum: this.queryInfo.pageNum,
         pageSize: this.queryInfo.pageSize,
         noticeLevel: this.queryInfo.level,
-        status:this.queryInfo.status,
+        status: this.queryInfo.status,
       });
       this.noticeList = res.data;
       console.log(this.noticeList);
       this.total = res.num;
     },
-    del(num){
-        alert(num)
+    del(num) {
+      alert(num);
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -192,15 +185,15 @@ export default {
       this.queryInfo.pageNum = val;
       this.getNoticeList();
     },
-     typeFormatter(row, column, cellValue){
-       return this.status.find(element => element.value===cellValue).label;
-     },
-     fromFormatter(row, column, cellValue){
-       console.log(cellValue);
-       return this.levels.find(element => element.value===cellValue).label;
-     },
-    async updateStatus(id){
-        const result = await this.$confirm("是否发布该消息", "提示", {
+    typeFormatter(row, column, cellValue) {
+      return this.status.find((element) => element.value === cellValue).label;
+    },
+    fromFormatter(row, column, cellValue) {
+      console.log(cellValue);
+      return this.levels.find((element) => element.value === cellValue).label;
+    },
+    async updateStatus(id) {
+      const result = await this.$confirm("是否发布该消息", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -208,22 +201,22 @@ export default {
       if (result != "confirm") {
         return this.$message.info("已取消发布");
       }
-      const { data: res } = await this.$http.get("notice/updateStatus",{
-          params:{
-              id:id,
-              status:1
-          }
+      const { data: res } = await this.$http.get("notice/updateStatus", {
+        params: {
+          id: id,
+          status: 1,
+        },
       });
-      if (res>= 1) {
+      if (res >= 1) {
         this.$message.success("发布成功");
         //并且刷新当前列表
         this.getNoticeList();
       } else {
         this.$message.error("发布失败");
       }
-     },
-}
-}
+    },
+  },
+};
 </script>
 <style>
 .text {
