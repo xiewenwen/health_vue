@@ -1,32 +1,58 @@
 <template>
   <div>
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item>/消息公告</el-breadcrumb-item>
+      <el-breadcrumb-item>/健康档案</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="item">
-      <el-select v-model="queryInfo.level" placeholder="消息等级">
-        <el-option
-          v-for="item in levels"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+      <el-select v-model="queryInfo.isOut" placeholder="是否过期">
+          <el-option
+          label="全部"
+          value=''
         >
         </el-option>
-      </el-select>
-      <el-select v-model="queryInfo.status" placeholder="发布状态">
         <el-option
-          v-for="item in status"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          label="过期"
+          value="过期"
         >
         </el-option>
+        <el-option
+          label="正常"
+          value="正常"
+        >
+        </el-option>
+        
       </el-select>
+      <el-select v-model="queryInfo.hsResult" placeholder="检测结果">
+          <el-option
+          label="全部"
+          value=''
+        >
+        </el-option>
+        <el-option
+          label="绿码"
+          value="绿码"
+        >
+        </el-option>
+        <el-option
+          label="红码"
+          value="红码"
+        >
+        </el-option>
+        <el-option
+          label="黄码"
+          value="黄码"
+        >
+        </el-option>
+        
+      </el-select>
+     
+        <el-input style="width:200px"  v-model="queryInfo.username" placeholder="姓名"></el-input>
+       <el-input style="width:200px" v-model="queryInfo.tel" placeholder="手机号"></el-input>
       <el-button
         type="primary"
         plain
         icon="el-icon-search"
-        @click="getNoticeList"
+        @click="getHealthList"
         >搜索</el-button
       >
       <el-button type="primary" @click="addDialogVisible = true"
@@ -34,33 +60,23 @@
       >
     </div>
     <div>
-      <el-table :data="noticeList" class="tableStyle" border stripe max-height="480" size="mini">
+      <el-table :data="healthList" class="tableStyle" border stripe max-height="480" size="mini">
         <!-- <el-table-column type="index"></el-table-column> -->
-        <el-table-column prop="id" label="编号" min-width="20px"> </el-table-column>
-        <el-table-column prop="noticeTitle" label="标题"> </el-table-column>
-        <el-table-column prop="noticeText" label="正文内容" show-overflow-tooltip="true"> </el-table-column>
-        <!-- <el-table-column prop="noticeLevel" label="通知等级" :formatter="fromFormatter">
-
-        </el-table-column> -->
-        <el-table-column prop="noticeDate" label="发布日期" min-width="50px"></el-table-column>
-        <el-table-column prop="noticeLevel" label="通知等级" min-width="50px">
+        <el-table-column prop="id" label="用户编号" min-width="20px"> </el-table-column>
+        <el-table-column prop="username" label="姓名" min-width="20px"> </el-table-column>
+        <el-table-column prop="tel" label="手机" min-width="20px"> </el-table-column>
+        <el-table-column prop="healthData.hsCreateTime" label="检测日期" min-width="50px"></el-table-column>
+        <el-table-column prop="healthData.hsResult" label="核酸结果" min-width="50px">
+            
           <template slot-scope="scope">
-            <el-tag v-show="scope.row.noticeLevel === 1" type="danger">{{
-              fromFormatter(scope.row, noticeLevel, scope.row.noticeLevel)
-            }}</el-tag>
-            <el-tag v-show="scope.row.noticeLevel === 2" type="warning">{{
-              fromFormatter(scope.row, noticeLevel, scope.row.noticeLevel)
-            }}</el-tag>
-            <el-tag v-show="scope.row.noticeLevel === 3" type="info">{{
-              fromFormatter(scope.row, noticeLevel, scope.row.noticeLevel)
-            }}</el-tag>
+            <el-tag v-show="scope.row.healthData.hsResult === '红码'" type="danger">{{scope.row.healthData.hsResult}}</el-tag>
+            <el-tag v-show="scope.row.healthData.hsResult === '黄码'" type="warning">{{scope.row.healthData.hsResult}}</el-tag>
+            <el-tag v-show="scope.row.healthData.hsResult === '绿码'" type="success">{{scope.row.healthData.hsResult}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="发布状态" min-width="50px">
+        <el-table-column prop="healthData.isOutTime" label="核酸状态" min-width="50px">
           <template slot-scope="scope">
-            <el-tag :type="scope.row.status === 1 ? 'success' : ''">{{
-              typeFormatter(scope.row, status, scope.row.status)
-            }}</el-tag>
+            <el-tag :type="scope.row.healthData.isOutTime === '正常' ? '' : 'danger'">{{scope.row.healthData.isOutTime}}</el-tag>
           </template>
         </el-table-column>
         
@@ -112,76 +128,49 @@
 import AddNotice from "../notice/AddNotice.vue";
 
 export default {
-  name: "NoticeList",
+  name: "Health",
   components: {
     AddNotice,
   },
   data() {
     return {
       addDialogVisible: false,
-      levels: [
-        {
-          value: null,
-          label: "全部",
-        },
-        {
-          value: 1,
-          label: "紧急",
-        },
-        {
-          value: 2,
-          label: "严重",
-        },
-        {
-          value: 3,
-          label: "普通",
-        },
-      ],
-      status: [
-        {
-          value: null,
-          label: "全部",
-        },
-        {
-          value: 1,
-          label: "已发布",
-        },
-        {
-          value: 0,
-          label: "未发布",
-        },
-      ],
       //查询信息实体
       queryInfo: {
         pageNum: 1,
         pageSize: 10,
-        level: null,
-        status: null,
+        username: '',
+        tel: '',
+        isOut:'',
+        hsResult:''
       },
-      noticeList: [],
+      healthList: [],
       total: 0,
       //   addDialogVisible: false,
       noticeStatus: null,
     };
   },
   created() {
-    this.getNoticeList();
+    this.getHealthList();
   },
   methods: {
-    async getNoticeList() {
-      const { data: res } = await this.$http.post("/notice/list", {
+    async getHealthList() {
+      const { data: res } = await this.$http.post("/health/list", {
         pageNum: this.queryInfo.pageNum,
         pageSize: this.queryInfo.pageSize,
-        noticeLevel: this.queryInfo.level,
-        status: this.queryInfo.status,
+        tel: this.queryInfo.tel,
+        username: this.queryInfo.username,
+        isOut:this.queryInfo.isOut,
+        hsResult:this.queryInfo.hsResult
+
       });
-      this.noticeList = res.data;
-      console.log(this.noticeList);
+      this.healthList = res.data;
+      console.log(this.healthList);
       this.total = res.num;
     },
     closeDialog(){
         // this.addDialogVisible=false;
-        this.getNoticeList();
+        this.getHealthList();
     },
     //编辑消息
    async edit() {
@@ -195,21 +184,21 @@ export default {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.queryInfo.pageSize = val;
-      this.getNoticeList();
+      this.getHealthList();
     },
     //翻到第几页
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.queryInfo.pageNum = val;
-      this.getNoticeList();
+      this.getHealthList();
     },
-    typeFormatter(row, column, cellValue) {
-      return this.status.find((element) => element.value === cellValue).label;
-    },
-    fromFormatter(row, column, cellValue) {
-      console.log(cellValue);
-      return this.levels.find((element) => element.value === cellValue).label;
-    },
+    // typeFormatter(row, column, cellValue) {
+    //   return this.status.find((element) => element.value === cellValue).label;
+    // },
+    // fromFormatter(row, column, cellValue) {
+    //   console.log(cellValue);
+    //   return this.levels.find((element) => element.value === cellValue).label;
+    // },
     async updateStatus(id) {
       const result = await this.$confirm("是否发布该消息", "提示", {
         confirmButtonText: "确定",
@@ -228,7 +217,7 @@ export default {
       if (res >= 1) {
         this.$message.success("发布成功");
         //并且刷新当前列表
-        this.getNoticeList();
+        this.getHealthList();
       } else {
         this.$message.error("发布失败");
       }

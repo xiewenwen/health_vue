@@ -89,12 +89,15 @@ export default {
     async addNotice() {
       const { data: res } = await this.$http.post("notice/add", this.addForm);
       if (res >= 1) {
-        this.$message.success(res.msg);
+        
+        this.$message.success("新增消息成功");
         //添加成功后 关闭对话框
-        this.addDialogVisible = false;
+        // this.addDialogVisible = false;
+        //新增后重置表单
+        this.resetForm("addForms");
         //并且刷新当前列表
       } else {
-        this.$message.error(res.msg);
+        this.$message.error("新增消息失败");
       }
     },
     resetForm(formName) {

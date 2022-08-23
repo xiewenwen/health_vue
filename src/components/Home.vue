@@ -42,9 +42,6 @@
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
-          background-color="#545c64"
-          text-color="#fff"
-          active-text-color="#ffd04b"
         >
           <el-menu-item index="/sta">
             <i class="el-icon-menu"></i>
@@ -60,7 +57,7 @@
             <el-menu-item index="/user" @click="savePath('/user')"
               >用户管理</el-menu-item
             >
-            <el-menu-item index="/user" @click="savePath('/user888')"
+            <el-menu-item index="/health" @click="savePath('/health')"
               >健康数据</el-menu-item
             >
             <el-menu-item
@@ -98,7 +95,7 @@
               <span>系统设置</span>
             </template>
             <!-- 二级菜单 -->
-            <el-menu-item index="/user" @click="savePath('/user')"
+            <el-menu-item index="/config" @click="savePath('/config')"
               >核酸过期时间</el-menu-item
             >
           </el-submenu>

@@ -12,6 +12,8 @@ import Static from '../components/Static'
 import NewView from '../components/NewView'
 import GoodsList from '../components/goods/GoodsList'
 import NoticeList from '../components/notice/NoticeList'
+import EditConfig from '../components/config/EditConfig'
+import Health from '../components/admin/Health'
 
 
 Vue.use(VueRouter)
@@ -55,6 +57,14 @@ const routes = [
         {
           path:'/goods',
           component:GoodsList
+        },
+        {
+          path:'/config',
+          component:EditConfig
+        },
+        {
+          path:'/health',
+          component:Health
         },
         {
           path:'/notice',
