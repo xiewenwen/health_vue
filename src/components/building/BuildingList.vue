@@ -65,7 +65,7 @@
         </div>
       </template>
       <el-dialog
-        title="添加用户"
+        title="新增居民楼"
         :visible.sync="addDialogVisible"
         width="50%"
         @close="addDialogClosed"
@@ -172,11 +172,11 @@ export default {
         ],
         danYuan: [
           { required: true, message: "请输入单元楼", trigger: "blur" },
-          { min: 4, max: 6, message: "长度在 4 到 6个字符", trigger: "blur" },
+          { min: 2, max: 6, message: "长度在 2到 6个字符", trigger: "blur" },
         ],
         bianHao: [
           { required: true, email: "请输入门牌号", trigger: "blur" },
-          { min: 4, max: 6, message: "长度在 4到 6个字符", trigger: "blur" },
+          { min: 2, max: 6, message: "长度在 2到 6个字符", trigger: "blur" },
         ],
       },
     };

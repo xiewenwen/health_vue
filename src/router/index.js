@@ -14,6 +14,10 @@ import GoodsList from '../components/goods/GoodsList'
 import NoticeList from '../components/notice/NoticeList'
 import EditConfig from '../components/config/EditConfig'
 import Health from '../components/admin/Health'
+import HomeUser from '../components/admin/HomeUser'
+import UserNotice from '../components/notice/UserNotice'
+import MyApply from '../components/notice/MyApply'
+// import { component } from 'vue/types/umd'
 
 
 Vue.use(VueRouter)
@@ -65,6 +69,18 @@ const routes = [
         {
           path:'/health',
           component:Health
+        },
+        {
+          path:'/home/user',
+          component:HomeUser
+        },
+        {
+          path:'/home/notice',
+          component:UserNotice
+        },
+        {
+          path:'/user/applys',
+          component:MyApply
         },
         {
           path:'/notice',

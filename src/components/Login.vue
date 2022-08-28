@@ -63,8 +63,17 @@ export default {
         if (res.code === 200) {
           this.$message.success("success");
           localStorage.setItem("user", res.user);
+          localStorage.setItem("roleId", res.user.roleId);
+          localStorage.setItem("username", res.user.username);
+          localStorage.setItem("userId", res.user.id);
+          let roleId = res.user.roleId;
+          if (roleId === 2) {
+            this.$router.push({ path: "/home/user" });
+          } else {
+            this.$router.push({ path: "/home" });
+          }
           //控制路由跳转到对应home组件下
-          this.$router.push({ path: "/home" });
+          // this.$router.push({ path: "/home" });
         } else {
           this.$message.error(res.msg);
         }
