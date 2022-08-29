@@ -202,7 +202,6 @@ export default {
   color: #333;
   background-color: #333;
   line-height: 60px;
-
   text-align: right;
 }
 .el-footer {
@@ -213,7 +212,7 @@ export default {
 }
 
 .el-aside {
-  background-color: #72976d;
+  background-color: white;
   color: #333;
   text-align: left;
   line-height: 200px;
@@ -221,11 +220,12 @@ export default {
 }
 
 .el-main {
-  background-color: #f4f8fc;
+  background-color: white;
   color: #333;
   text-align: left;
   /* line-height: 160px; */
   width: 100%;
+  height: 100%;
   /* 加入此行解决表头变宽问题 */
   line-height: 20px !important;
 }
