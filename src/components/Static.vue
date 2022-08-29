@@ -5,48 +5,135 @@
       <el-breadcrumb-item>权限管理</el-breadcrumb-item> -->
       <el-breadcrumb-item>首页监控信息</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-row :gutter="20">
-      <el-col :span="6"
-        ><div class="grid-content bg-purple">
-          <span>核酸过期人数：{{ healthNum }}</span>
-        </div></el-col
-      >
-      <el-col :span="6"
-        ><div class="grid-content bg-purple">
-          <span>消息未处理：{{ applyNum }}</span>
-        </div></el-col
-      >
-      <el-col :span="6"
-        ><div class="grid-content bg-purple">
-          <span v-for="item in genders" :key="item.index">
-            <template v-if="item.gender == 0"
-              >男性： {{ item.genderNum }}</template
-            >
-            <!-- 1是女性  0是男性 -->
-            <template v-if="item.gender == 1"
-              >女性：{{ item.genderNum }}</template
-            >
+    <el-row :gutter="12" style="margin-top: 7px">
+      <el-col :span="6">
+        <el-card
+          shadow="always"
+          class="my-card"
+          style="border-top-color: rgb(236, 163, 114)"
+        >
+          <span>核酸检测人数</span>
+          <br />
+          <span class="my-card-item">10</span>
+          <el-image
+            class="myimg"
+            :src="require('../assets/yellow.png')"
+          ></el-image
+          ><br />
+          过期：<span class="" style="color: rgb(0, 0, 0)">{{ healthNum }}</span
+          ><br />
+          正常：<span class="" style="color: rgb(0, 0, 0)">10</span>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card
+          shadow="always"
+          class="my-card"
+          style="border-top-color: #1e90ff"
+        >
+          <span>申请通知(条)</span>
+          <br />
+          <span class="my-card-item">10</span>
+          <el-image
+            class="myimg"
+            :src="require('../assets/bule.png')"
+          ></el-image
+          ><br />
+          已处理：<span class="" style="color: rgb(0, 0, 0)">3</span><br />
+          未处理：<span class="" style="color: rgb(0, 0, 0)">{{
+            applyNum
+          }}</span>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card
+          shadow="always"
+          class="my-card"
+          style="border-top-color: #00ced1"
+        >
+          <span>人口总数</span>
+          <br />
+          <span class="my-card-item">{{ menNum + ladyNum }}</span>
+          <el-image
+            class="myimg"
+            :src="require('../assets/green.png')"
+          ></el-image
+          ><br />
+          <span>
+            男性：<span style="color: rgb(0, 0, 0)">{{ menNum }}</span
+            ><br />
+            女性：<span style="color: rgb(0, 0, 0)">{{ ladyNum }}</span>
           </span>
-        </div></el-col
-      >
-
-      <el-col :span="6"
-        ><div class="grid-content bg-purple">
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card
+          shadow="always"
+          class="my-card"
+          style="border-top-color: #ff69b4"
+        >
+          <span>居住类别</span>
+          <br />
+          <span class="my-card-item">{{ menNum + ladyNum }}</span>
+          <el-image class="myimg" :src="require('../assets/red.png')"></el-image
+          ><br />
           <span v-for="item in userOwner" :key="item.index">
-            {{ item.ownerType }}:{{ item.ownerNum }}
+            {{ item.ownerType }}：<span style="color: rgb(0, 0, 0)">{{
+              item.ownerNum
+            }}</span
+            ><br />
           </span>
-        </div></el-col
-      >
+        </el-card>
+      </el-col>
     </el-row>
     <!-- <div
       ref="circle"
-      class="echarts-box"
-      style="width: 450px; height: 300px; border: 1px solid red"
+      style="width: 500px; height: 450px;"
     ></div> -->
+    <el-row :gutter="20">
+  <el-col :span="12"><div class="grid-content bg-purple"><el-card class="box-card">
+  <div slot="header" class="clearfix">
+    <span>物资库存</span>
+  </div>
+  <div
+      ref="circle"
+      style="width: 450px; height: 370px;"
+    ></div>
+</el-card></div>
+</el-col>
+  <el-col :span="12"><div class="grid-content bg-purple"><el-card class="box-card">
+    <div slot="header" class="clearfix">
+    <span>物资出库排名</span>
+  </div>
+  <el-table
+      :data="tableData"
+      style="width: 100%">
+      <el-table-column
+        prop="date"
+        label="名称"
+        width="180">
+      </el-table-column>
+      <!-- <el-table-column
+        prop="name"
+        label="姓名"
+        width="180">
+      </el-table-column> -->
+      <el-table-column
+        prop="address"
+        label="出库次数">
+      </el-table-column>
+    </el-table>
+</el-card>
+    </div></el-col>
+</el-row>
+    
+    <!-- <div class="column-container">
+    <div ref="monthWorkOrder" class="echarts-box" style="width: 600px; height: 300px; border: 1px solid red"></div>
+  </div> -->
   </div>
 </template>
-
 <script>
+// import * as echarts from 'echarts';
 export default {
   name: "Static",
   data() {
@@ -57,14 +144,41 @@ export default {
       healthNum: 0,
       userOwner: [],
       applyNum: 0,
+      menNum: 0,
+      ladyNum: 0,
+      goodsSum:[],
+      tableData: [{
+            date: '2016-05-02',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1518 弄'
+          }, {
+            date: '2016-05-04',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1517 弄'
+          }, {
+            date: '2016-05-01',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1519 弄'
+          }, {
+            date: '2016-05-03',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1516 弄'
+          }]
     };
   },
   created() {
-    // this.initMonthWorkOrder();
-    // this.initcircle();
+    //   this.initMonthWorkOrder();
+    //  this.initcircle();
     this.getUserInfo();
     this.getHealthInfo();
     this.getApplyInfo();
+    this.getGoodsInfo();
+  },
+  mounted() {
+    // this.initMonthWorkOrder();
+    //要放到mounted下，creaed下无效
+   
+    // this.initcircle();
   },
   methods: {
     async getUserInfo() {
@@ -72,7 +186,16 @@ export default {
       this.genders = res.userGender;
       this.userOwner = res.userOwner;
       console.log(res);
-      console.log(this.userInfo);
+      //获得男女性别人数
+      this.genders.forEach((element) => {
+        console.log(element);
+        if (element.gender === 0) {
+          this.menNum = element.genderNum;
+        }
+        if (element.gender === 1) {
+          this.ladyNum = element.genderNum;
+        }
+      });
     },
     async getHealthInfo() {
       const { data: res } = await this.$http.get("/sta/health");
@@ -86,37 +209,66 @@ export default {
       console.log(res);
       console.log(this.applyNum);
     },
+    async getGoodsInfo() {
+      const { data: res } = await this.$http.get("/sta/goodsSum");
+      this.goodsSum = res;
+      console.log(res);
+      //拿到数据后，在这一步渲染图表
+      this.initcircle();
+    },
 
-    // initcircle() {
-    //   let myChart = this.$echarts.init(this.$refs.circle);
-    //   let option = {
-    //     series: [
-    //       {
-    //         type: "pie",
-    //         data: [
-    //           {
-    //             value: 335,
-    //             name: "直接访问",
-    //           },
-    //           {
-    //             value: 234,
-    //             name: "联盟广告",
-    //           },
-    //           {
-    //             value: 1548,
-    //             name: "搜索引擎",
-    //           },
-    //         ],
-    //       },
-    //     ],
-    //   };
-    //   myChart.setOption(option);
-    // },
+    initcircle() {
+      let myChart = this.$echarts.init(this.$refs.circle, null, {
+        renderer: "canvas",
+        useDirtyRect: false,
+      });
+      console.log("sdsdsdsd",this.goodsSum);
+      var option = {
+        tooltip: {
+          trigger: "item",
+        },
+        legend: {
+          top: "5%",
+          left: "center",
+        },
+        series: [
+          {
+            name: "物资数量",
+            type: "pie",
+            radius: ["40%", "70%"],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: "center",
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: "40",
+                fontWeight: "bold",
+              },
+            },
+            labelLine: {
+              show: false,
+            },
+            // data: [
+            //   { value: 1048, name: "Search Engine" },
+            //   { value: 735, name: "Direct" },
+            //   { value: 580, name: "Email" },
+            //   { value: 484, name: "Union Ads" },
+            //   { value: 300, name: "Video Ads" },
+            // ],
+            data:this.goodsSum
+          },
+        ],
+      };
+      myChart.setOption(option);
+    },
   },
 };
 </script>
 
-<style>
+<style scoped>
 .el-row {
   margin-bottom: 10px;
   &:last-child {
@@ -141,10 +293,32 @@ export default {
   border-radius: 4px;
   min-height: 36px;
   width: 100%;
-  height: 110px;
+  height: 100%;
 }
 .row-bg {
   padding: 10px 0;
   background-color: #f9fafc;
+}
+.my-card {
+  font-size: 15px;
+  margin: 4px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  color: rgb(148, 148, 155);
+  border-top-style: solid;
+  border-top-width: 2px;
+  background-repeat: no-repeat;
+  background-position: right bottom;
+}
+.my-card-item {
+  font-size: 17px;
+  margin-top: 10px;
+  line-height: 2;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+}
+.myimg {
+  /* margin-right: 5px; */
+  float: right;
 }
 </style>
