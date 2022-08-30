@@ -8,7 +8,7 @@
       </div></el-header
     >
     <el-container style="width: 100%; height: 100%">
-      <el-aside width="215px" >
+      <el-aside width="215px">
         <!-- <el-row class="tac">
       <el-col :span="12"> -->
         <!-- <el-menu
@@ -69,7 +69,7 @@
             <el-menu-item
               index="/building/list"
               @click="savePath('/building/list')"
-              >住房管理</el-menu-item
+              >居住信息</el-menu-item
             >
           </el-submenu>
           <el-submenu index="003" v-show="showAdmin">
