@@ -86,12 +86,44 @@
         </el-card>
       </el-col>
     </el-row>
-    <!-- <div
-      ref="circle"
-      style="width: 500px; height: 450px;"
-    ></div> -->
     <el-row :gutter="20">
+
   <el-col :span="12"><div class="grid-content bg-purple"><el-card class="box-card">
+    <div slot="header" class="clearfix">
+      <span v-for="item in sal" :key="item.index">{{item.name}}:{{item.value}}</span>
+  </div>
+  <el-table
+      :data="users"
+      style="width: 100%">
+      <el-table-column
+        prop="username"
+        label="姓名">
+      </el-table-column>
+      <el-table-column
+        prop="tel"
+        label="电话">
+      </el-table-column>
+      <el-table-column
+        prop="hsCode"
+        label="健康码">
+        <template slot-scope="scope">
+            <el-tag v-show="scope.row.hsCode === '红码'" type="danger">{{scope.row.hsCode}}</el-tag>
+            <el-tag v-show="scope.row.hsCode === '黄码'" type="warning">{{scope.row.hsCode}}</el-tag>
+            <el-tag v-show="scope.row.hsCode === '绿码'" type="success">{{scope.row.hsCode}}</el-tag>
+          </template>
+      </el-table-column>
+      <el-table-column
+        prop="updatetime"
+        label="检测时间">
+      </el-table-column>
+      <el-table-column
+        prop="home"
+        label="住址">
+      </el-table-column>
+    </el-table>
+</el-card>
+    </div></el-col>
+      <el-col :span="12"><div class="grid-content bg-purple"><el-card class="box-card">
   <div slot="header" class="clearfix">
     <span>物资库存</span>
   </div>
@@ -101,30 +133,6 @@
     ></div>
 </el-card></div>
 </el-col>
-  <el-col :span="12"><div class="grid-content bg-purple"><el-card class="box-card">
-    <div slot="header" class="clearfix">
-    <span>物资出库排名</span>
-  </div>
-  <el-table
-      :data="tableData"
-      style="width: 100%">
-      <el-table-column
-        prop="date"
-        label="名称"
-        width="180">
-      </el-table-column>
-      <!-- <el-table-column
-        prop="name"
-        label="姓名"
-        width="180">
-      </el-table-column> -->
-      <el-table-column
-        prop="address"
-        label="出库次数">
-      </el-table-column>
-    </el-table>
-</el-card>
-    </div></el-col>
 </el-row>
     
     <!-- <div class="column-container">
@@ -147,6 +155,8 @@ export default {
       menNum: 0,
       ladyNum: 0,
       goodsSum:[],
+      sal:[],
+      users:[],
       tableData: [{
             date: '2016-05-02',
             name: '王小虎',
@@ -173,6 +183,7 @@ export default {
     this.getHealthInfo();
     this.getApplyInfo();
     this.getGoodsInfo();
+    this.getHealthCode();
   },
   mounted() {
     // this.initMonthWorkOrder();
@@ -215,6 +226,11 @@ export default {
       console.log(res);
       //拿到数据后，在这一步渲染图表
       this.initcircle();
+    },
+    async getHealthCode(){
+      const {data:res}=await this.$http.get("/sta/healthCode");
+      this.sal=res.sal;
+      this.users=res.users; 
     },
 
     initcircle() {

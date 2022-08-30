@@ -8,7 +8,7 @@
       </div></el-header
     >
     <el-container style="width: 100%; height: 100%">
-      <el-aside width="230px">
+      <el-aside width="215px" >
         <!-- <el-row class="tac">
       <el-col :span="12"> -->
         <!-- <el-menu
@@ -102,7 +102,7 @@
             </template>
             <!-- 二级菜单 -->
             <el-menu-item index="/config" @click="savePath('/config')"
-              >核酸过期时间</el-menu-item
+              >核酸过期</el-menu-item
             >
           </el-submenu>
 
@@ -216,7 +216,7 @@ export default {
   color: #333;
   text-align: left;
   line-height: 200px;
-  height: 100%;
+  height: 650px;
 }
 
 .el-main {

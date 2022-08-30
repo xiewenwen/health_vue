@@ -7,10 +7,10 @@
     </el-breadcrumb>
     <div class="item">
       <el-input
-        placeholder="请输入内容"
+        placeholder="用户名"
         v-model="queryInfo.query"
         @click="getUserList"
-        style="width: 250px"
+        style="width: 230px"
         clearable
       >
       </el-input>
@@ -22,12 +22,35 @@
       >
     </div>
     <div>
-      <el-table :data="userList" class="tableStyle" border stripe>
-        <el-table-column type="index"></el-table-column>
-        <el-table-column prop="username" label="用户名"> </el-table-column>
-        <el-table-column prop="email" label="邮件"> </el-table-column>
-        <el-table-column prop="role" label="角色"> </el-table-column>
-        <el-table-column prop="state" label="状态">
+      <el-table :size="mini" :data="userList" style="width: 100%" border stripe>
+        <!-- <el-table-column type="index"></el-table-column> -->
+        <el-table-column fixed prop="username" label="用户名"> </el-table-column>
+        <el-table-column fixed prop="cardId" label="身份证" width="120"> </el-table-column>
+         <el-table-column prop="gender" label="性别">
+           <template slot-scope="scope"
+            >{{scope.row.gender==0?'男':'女'}}
+          </template>
+         </el-table-column>
+         
+         <el-table-column prop="tel" label="电话" width="120"> </el-table-column>
+        <el-table-column prop="email" label="邮件" width="120"> </el-table-column>
+        <el-table-column prop="owner" label="身份"> </el-table-column>
+        <el-table-column prop="xueLi" label="学历"> </el-table-column>
+        <el-table-column prop="zhiYe" label="职业"> </el-table-column>
+        <el-table-column prop="huji" label="户籍"> </el-table-column>
+        <el-table-column prop="workPlace" label="工作地址"> </el-table-column>
+        <!-- <el-table-column prop="buildings.zhuang" :v-show="false"> </el-table-column>
+        <el-table-column prop="buildings.danYuan" :v-show="false"> </el-table-column>
+        <el-table-column prop="buildings.bianHao" :v-show="false"> </el-table-column> -->
+        <el-table-column prop="buildings.bianHao" label="居住地" width="120" > 
+          <template slot-scope="scope"
+            >{{scope.row.buildings.zhuang}}{{scope.row.buildings.danYuan}}{{scope.row.buildings.bianHao}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="roleId" label="权限"><template slot-scope="scope"
+            >{{scope.row.roleId==1?'管理员':'普通'}}
+          </template> </el-table-column>
+        <el-table-column prop="state" fixed="right" label="状态">
           <!-- 作用域插槽 控制状态-->
           <template slot-scope="scope"
             ><el-switch
@@ -36,7 +59,7 @@
             ></el-switch
           ></template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" fixed="right" width="120">
           <template slot-scope="scope">
             <el-button
               @click="getUserInfo(scope.row.id)"
@@ -47,7 +70,7 @@
             <el-button type="text" size="small" @click="delUser(scope.row.id)"
               >删除</el-button
             >
-            <el-button type="text" size="small">权限</el-button>
+            <!-- <el-button type="text" size="small">权限</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -303,7 +326,7 @@ export default {
 }
 
 .tableStyle {
-  height: 500px;
+  height: 100%;
   width: 100%;
 }
 .block {
