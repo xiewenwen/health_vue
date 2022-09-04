@@ -66,6 +66,7 @@ export default {
           localStorage.setItem("roleId", res.user.roleId);
           localStorage.setItem("username", res.user.username);
           localStorage.setItem("userId", res.user.id);
+          localStorage.setItem("buildingsId", res.user.livePlace);
           let roleId = res.user.roleId;
           if (roleId === 2) {
             this.$router.push({ path: "/home/user" });

@@ -3,11 +3,10 @@
     <el-breadcrumb separator="/">
       <el-breadcrumb-item>/我的申请</el-breadcrumb-item></el-breadcrumb
     >
-    <!-- </el-breadcrumb>
     <div class="item">
-      <el-select v-model="queryInfo.level" placeholder="消息等级">
+      <el-select v-model="queryInfo.applyType" placeholder="申请类型">
         <el-option
-          v-for="item in levels"
+          v-for="item in types"
           :key="item.value"
           :label="item.label"
           :value="item.value"
@@ -21,7 +20,10 @@
         @click="getMyApplyList"
         >搜索</el-button
       >
-    </div> -->
+      <el-button type="primary" plain @click="addDialogVisible = true"
+        >添加申请</el-button
+      >
+    </div>
     <div>
       <el-table
         :data="applys"
@@ -33,39 +35,45 @@
       >
         <el-table-column prop="id" label="编号" min-width="20px">
         </el-table-column>
-        <el-table-column prop="applyName" label="标题"> </el-table-column>
-        <el-table-column
+        <el-table-column prop="applyUserName" label="申请人"> </el-table-column>
+        <!-- <el-table-column
           prop="applyInfo"
           label="申请内容"
           show-overflow-tooltip="true"
         >
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           prop="applyCreateTime"
           label="申请日期"
           min-width="50px"
         ></el-table-column>
-        <el-table-column prop="applyType" label="通知等级" min-width="50px">
-          <template slot-scope="scope">
-            <el-tag v-show="scope.row.applyType === 1" type="danger">{{
-              fromFormatter(scope.row, applyType, scope.row.applyType)
-            }}</el-tag>
-            <el-tag v-show="scope.row.applyType === 2" type="warning">{{
-              fromFormatter(scope.row, applyType, scope.row.applyType)
-            }}</el-tag>
-            <el-tag v-show="scope.row.applyType === 3" type="info">{{
-              fromFormatter(scope.row, applyType, scope.row.applyType)
-            }}</el-tag>
-          </template>
+        <el-table-column
+          prop="applyType"
+          label="申请类型"
+          min-width="50px"
+          :formatter="typeFormatter"
+        >
         </el-table-column>
-
+        <el-table-column
+          prop="opDate"
+          label="处理日期"
+          min-width="50px"
+        ></el-table-column>
+        <el-table-column
+          prop="opResult"
+          label="处理结果"
+          :formatter="resultFormatter"
+          min-width="50px"
+        ></el-table-column>
         <el-table-column label="操作" min-width="50px" align="left">
           <template slot-scope="scope">
             <el-button
               @click="getDetail(scope.row.id, scope.row.applyType)"
               type="text"
               size="60%"
-              >查看详情</el-button
+              >{{
+                scope.row.opResult == 3 && roleId == 1 ? "审批" : "查看详情"
+              }}</el-button
             >
           </template>
         </el-table-column>
@@ -85,31 +93,35 @@
     </div>
     <div>
       <el-drawer
-        :title="title"
+        title="申请详情"
         :visible.sync="drawer"
         :direction="direction"
+        size="40%"
         :before-close="handleClose"
-        size="60%"
         :destroy-on-close="true"
       >
-        <NoticeDetail :id="id" />
+        <ApplyDetail :id="id" :roleId="roleId" />
       </el-drawer>
-      <el-dialog title="发布消息" :visible.sync="addDialogVisible" width="40%">
-        <AddNotice :msg="addDialogVisible" />
+      <el-dialog title="添加申请" :visible.sync="addDialogVisible" width="70%">
+        <AddApply />
       </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import AddNotice from "../notice/AddNotice.vue";
-import NoticeDetail from "../notice/NoticeDetail.vue";
+// import AddNotice from "../notice/AddNotice.vue";
+// import NoticeDetail from "../notice/NoticeDetail.vue";
+import ApplyDetail from "../notice/ApplyDetail.vue";
+import AddApply from "../notice/AddApply.vue";
 
 export default {
   name: "MyApply",
   components: {
-    AddNotice,
-    NoticeDetail,
+    // AddNotice,
+    // NoticeDetail,
+    ApplyDetail,
+    AddApply,
   },
   data() {
     return {
@@ -119,29 +131,52 @@ export default {
       id: null,
       title: "",
       show: false,
-      levels: [
+      roleId: 0,
+      types: [
         {
           value: null,
           label: "全部",
         },
         {
           value: 1,
-          label: "紧急",
+          label: "增加居住人",
         },
         {
           value: 2,
-          label: "严重",
+          label: "访客报备",
         },
         {
           value: 3,
-          label: "普通",
+          label: "社区物资申请",
+        },
+        {
+          value: 4,
+          label: "其他",
+        },
+      ],
+      results: [
+        {
+          value: null,
+          label: "全部",
+        },
+        {
+          value: 1,
+          label: "审批通过",
+        },
+        {
+          value: 0,
+          label: "审批不通过",
+        },
+        {
+          value: 3,
+          label: "审批未处理",
         },
       ],
       //查询信息实体
       queryInfo: {
         pageNum: 1,
         pageSize: 10,
-        userId: null,
+        userId: 0,
         applyType: null,
         opResult: null,
       },
@@ -149,6 +184,7 @@ export default {
       total: 0,
       //   addDialogVisible: false,
       noticeStatus: null,
+      userId: 0,
     };
   },
   created() {
@@ -157,6 +193,13 @@ export default {
   methods: {
     async getMyApplyList() {
       this.userId = localStorage.getItem("userId");
+      this.roleId = localStorage.getItem("roleId");
+      if (this.roleId == 1) {
+        this.queryInfo.userId = null;
+      } else {
+        this.queryInfo.userId = this.userId - 0;
+      }
+
       const { data: res } = await this.$http.post("/user/applys", {
         pageNum: this.queryInfo.pageNum,
         pageSize: this.queryInfo.pageSize,
@@ -171,6 +214,15 @@ export default {
       this.id = id;
       this.drawer = true;
       this.title = title;
+    },
+
+    handleClose(done) {
+      this.$confirm("是否要退出申请详情？")
+        .then(() => {
+          this.getMyApplyList();
+          done();
+        })
+        .catch(() => {});
     },
     closeDialog() {
       // this.addDialogVisible=false;
@@ -191,12 +243,12 @@ export default {
       this.queryInfo.pageNum = val;
       this.getMyApplyList();
     },
-    typeFormatter(row, column, cellValue) {
-      return this.status.find((element) => element.value === cellValue).label;
+    resultFormatter(row, column, cellValue) {
+      return this.results.find((element) => element.value === cellValue).label;
     },
-    fromFormatter(row, column, cellValue) {
+    typeFormatter(row, column, cellValue) {
       console.log(cellValue);
-      return this.levels.find((element) => element.value === cellValue).label;
+      return this.types.find((element) => element.value === cellValue).label;
     },
     async updateStatus(id) {
       const result = await this.$confirm("是否发布该消息", "提示", {

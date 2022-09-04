@@ -91,7 +91,7 @@
             <el-menu-item index="/notice" @click="savePath('/notice')"
               >公告信息</el-menu-item
             >
-            <el-menu-item index="/user" @click="savePath('/user')"
+            <el-menu-item index="/user/applys" @click="savePath('/user/applys')"
               >申请信息</el-menu-item
             >
           </el-submenu>
